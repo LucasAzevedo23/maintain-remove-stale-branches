@@ -2,6 +2,10 @@ name: Maintain Stale branches
 description: This action serves to maintain stale branches
 
 input:
+  github-token:
+    description: 'The GitHub token used to create an authenticated client'
+    default: ${{ github.token }}
+    required: false
   repo:
     description: 'owner/repo'
     required: true
