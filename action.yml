@@ -1,0 +1,21 @@
+name: Maintain Stale branches
+description: This action serves to maintain stale branches
+
+input:
+  repo:
+    description: 'owner/repo'
+    required: true
+  developer_team_slug:
+    description: 'developer team slug'
+    required: true
+  admin_team_slug:
+    description: 'admin team slug'
+    required: true
+
+runs: 
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.repo }}
+    - ${{ inputs.developer_team_slug }}
+    - ${{ inputs.admin_team_slug }}

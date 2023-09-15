@@ -1,0 +1,24 @@
+name: Release Action
+
+on:
+  push:
+    branches:
+      - release/**
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Config git
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git fetch
+          git pull
+      - name: Git tag
+        run: |
+          export version=$(git branch --show-current | sed 's:.*/::')
+          git tag -a $version -m $version
+          git push origin --tags
