@@ -1,0 +1,1 @@
+# maintain-remove-stale-branches
