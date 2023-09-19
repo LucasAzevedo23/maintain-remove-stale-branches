@@ -12,13 +12,16 @@ print(repo)
 print(developer_team_slug)
 print(admin_team_slug)
 
+auth = Auth.Token(github_token)
+
 # Initialize the GitHub API client
-github_instance = Github(github_token)
+github_instance = Github(auth=auth)
 
 # Get the repository
 repo = github_instance.get_repo(repo)
 
-print(repo.get_branches())
+for branch in repo.get_branches():
+    print(branch.name)
 
 # # Calculate the timestamps for 2 and 3 weeks ago
 # two_weeks_ago = datetime.datetime.now() - datetime.timedelta(weeks=2)
