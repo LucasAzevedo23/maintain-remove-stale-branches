@@ -2,11 +2,10 @@ name: Maintain Stale branches
 description: This action serves to maintain stale branches
 
 input:
-  github-token:
+  token:
     description: 'The GitHub token used to create an authenticated client'
-    default: ${{ github.token }}
-    required: false
-  repo:
+    required: true
+  repository:
     description: 'owner/repo'
     required: true
   developer_team_slug:
@@ -19,7 +18,3 @@ input:
 runs: 
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.repo }}
-    - ${{ inputs.developer_team_slug }}
-    - ${{ inputs.admin_team_slug }}
