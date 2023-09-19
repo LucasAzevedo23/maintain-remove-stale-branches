@@ -1,0 +1,15 @@
+name: Test 
+
+on: [workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test maintain-remove-stale-branches
+        uses: LucasAzevedo23/maintain-remove-stale-branches@d7716b90c37a8e5e8252ab72f152810e9cdc0132
+        with:
+          token: test_token
+          repository: ${{ github.repository }}
+          developer_team_slug: developer_team_slug
+          admin_team_slug: admin_team_slug
