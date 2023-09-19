@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Test maintain-remove-stale-branches
-        uses: LucasAzevedo23/maintain-remove-stale-branches@4abef2ae9f466f7fe0dd7630fdd121318653434d
+        uses: LucasAzevedo23/maintain-remove-stale-branches@02bf7f387701a2074f1c48f9ddd8b82a438f80ed
         with:
-          token: test_token
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
           developer_team_slug: developer_team_slug
           admin_team_slug: admin_team_slug
