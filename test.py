@@ -34,25 +34,25 @@ print("-- Merged branches --")
 print(array_merged_branches)
 print()
 
-for team in teams:
-    # Append admin members to array_admins
-    if team.name == admin_team_slug:
-        for member in team.get_members():
-            user = github_instance.get_user(member.login)
-            array_admins.append({'name': user.name, 'email': user.email, 'login': user.login})
-    # Append developer members to array_developers
-    if team.name == developer_team_slug:
-        for member in team.get_members():
-            user = github_instance.get_user(member.login)
-            array_developers.append({'name': user.name, 'email': user.email, 'login': user.login})
+# for team in teams:
+#     # Append admin members to array_admins
+#     if team.name == admin_team_slug:
+#         for member in team.get_members():
+#             user = github_instance.get_user(member.login)
+#             array_admins.append({'name': user.name, 'email': user.email, 'login': user.login})
+#     # Append developer members to array_developers
+#     if team.name == developer_team_slug:
+#         for member in team.get_members():
+#             user = github_instance.get_user(member.login)
+#             array_developers.append({'name': user.name, 'email': user.email, 'login': user.login})
 
-print("-- Admins --")
-print(array_admins)
-print()
+# print("-- Admins --")
+# print(array_admins)
+# print()
 
-print("-- Developers --")
-print(array_developers)
-print()
+# print("-- Developers --")
+# print(array_developers)
+# print()
 
 for branch in branches:
     # Check if branch is main or dev and skip
@@ -89,3 +89,13 @@ for branch in branches:
 
 print()
 print(dict_branches)
+
+print()
+print()
+print('Branches to be deleted:')
+for d in dict_branches:
+    if d.get('should_be_deleted') == True:
+        print(d.get('branch_name'))
+        print(d.get('last_modified'))
+        print(d.get('should_be_deleted'))
+        print()
