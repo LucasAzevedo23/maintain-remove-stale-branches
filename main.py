@@ -1,11 +1,13 @@
 from github import Github
 from github import Auth
+import os
+import datetime
 
 # Initialize the GitHub API client
-g = Github(github_token)
+g = Github("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")
 
 # Get the repository
-repo = g.get_repo(os.environ['GITHUB_REPOSITORY'])
+repo = g.get_repo(os.environ["GITHUB_REPOSITORY"])
 
 # Calculate the timestamps for 2 and 3 weeks ago
 two_weeks_ago = datetime.datetime.now() - datetime.timedelta(weeks=2)
