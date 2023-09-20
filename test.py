@@ -3,7 +3,7 @@ from github import Github
 from github import Auth
 
 # Inputs
-token="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"
+token=""
 repo_slug="wexinc/ps-ds-peng-docs"
 admin_team_slug="platform-eng-admin"
 developer_team_slug="platform-eng"
