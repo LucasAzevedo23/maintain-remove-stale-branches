@@ -27,6 +27,9 @@ pull_requests = repo.get_pulls(state='closed')
 for pr in pull_requests:
     merged_branches.append(pr.head.ref)
 
+
+print("-- Checking branches --")
+print()
 for branch in branches:
     # Check if branch is main or dev and skip
     if branch.name == "main" or branch.name == "dev" or branch.name == "develop" or branch.name == "master":
@@ -39,6 +42,7 @@ for branch in branches:
 
     # Check if branch was already merged
     if branch.name in merged_branches:
+        print(" - branch", branch.name, "was already merged")
         branches_dictionary.append({ 'branch_name': branch.name,
                 'author_name': branch.commit.commit.author.name,
                 'author_email': branch.commit.commit.author.email,
@@ -48,6 +52,7 @@ for branch in branches:
         continue
     # Check if branch last_modified is older than the defined days_to_stale input
     elif delta.days >= days_to_stale:
+        print(" - branch", branch.name, "have not been modified in", delta.days, "days")
         branches_dictionary.append({ 'branch_name': branch.name,
                 'author_name': branch.commit.commit.author.name,
                 'author_email': branch.commit.commit.author.email,
@@ -56,6 +61,7 @@ for branch in branches:
                 'should_be_deleted': True })
         continue
     else:
+        print(" - branch", branch.name, "is active")
         branches_dictionary.append({ 'branch_name': branch.name,
                 'author_name': branch.commit.commit.author.name,
                 'author_email': branch.commit.commit.author.email,
@@ -64,10 +70,11 @@ for branch in branches:
                 'should_be_deleted': False })
         continue
 
-print('Branches to be deleted:')
+print('-- Branches to be marked as stale --')
+print()
 for d in branches_dictionary:
     if d.get('should_be_deleted') == True:
-        print("Branch name: ",  d.get('branch_name'))
-        print("Last Modification: ", d.get('last_modified'), "days")
-        print("Reason: ", d.get('reason'))
+        print(" Branch name: ",  d.get('branch_name'))
+        print(" Last Modification: ", d.get('last_modified'), "days")
+        print(" Reason: ", d.get('reason'))
         print()
