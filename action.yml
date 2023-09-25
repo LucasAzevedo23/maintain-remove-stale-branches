@@ -2,24 +2,16 @@ name: Maintain Stale branches
 description: This action serves to maintain stale branches
 
 input:
-  github-token:
-    description: 'The GitHub token used to create an authenticated client'
-    default: ${{ github.token }}
-    required: false
-  repo:
-    description: 'LucasAzevedo23/maintain-remove-stale-branches'
+  token:
+    description: 'GitHub token used to create an authenticated client'
     required: true
-  developer_team_slug:
-    description: 'developer team slug'
+  repository:
+    description: 'Slug of the repo on the format owner/repo'
     required: true
-  admin_team_slug:
-    description: 'admin team slug'
+  days_to_stale:
+    description: 'Quantity of days branch be considered stale'
     required: true
 
 runs: 
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.repo }}
-    - ${{ inputs.developer_team_slug }}
-    - ${{ inputs.admin_team_slug }}

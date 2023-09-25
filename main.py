@@ -1,100 +1,77 @@
-import datetime
+from datetime import datetime, timezone
+import os
 from github import Github
 from github import Auth
 
-# Inputs
-token="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"
-repo_slug="LucasAzevedo23/maintain-remove-stale-branches"
-
+# Retrieving input variables from environment variables
+github_token = os.environ['INPUT_TOKEN']
+repo = os.environ['INPUT_REPOSITORY']
+days_to_stale = int(os.environ['INPUT_DAYS_TO_STALE'])
 
 # Structures to be used
-dict_branches = []
-array_admins = []
-array_developers = []
-array_merged_branches = []
+branches_dictionary = []
+merged_branches = []
 
 # Github Library initial configuration
-auth = Auth.Token(token)
+auth = Auth.Token(github_token)
 github_instance = Github(auth=auth)
 
-# Repo and Org retrieval
-repo = github_instance.get_repo(repo_slug)
-org = github_instance.get_organization("wexinc")
-
-# Branches, teams and closed pull requests retrieval
+# Repo, Branches, and closed pull requests retrieval
+repo = github_instance.get_repo(repo)
 branches = repo.get_branches()
 pull_requests = repo.get_pulls(state='closed')
-teams = org.get_teams()
 
+# Retrieve branch name from closed pull requests
 for pr in pull_requests:
-    array_merged_branches.append(pr.head.ref)
+    merged_branches.append(pr.head.ref)
 
-print("-- Merged branches --")
-print(array_merged_branches)
-print()
 
-# for team in teams:
-#     # Append admin members to array_admins
-#     if team.name == admin_team_slug:
-#         for member in team.get_members():
-#             user = github_instance.get_user(member.login)
-#             array_admins.append({'name': user.name, 'email': user.email, 'login': user.login})
-#     # Append developer members to array_developers
-#     if team.name == developer_team_slug:
-#         for member in team.get_members():
-#             user = github_instance.get_user(member.login)
-#             array_developers.append({'name': user.name, 'email': user.email, 'login': user.login})
-
-# print("-- Admins --")
-# print(array_admins)
-# print()
-
-# print("-- Developers --")
-# print(array_developers)
-# print()
-
+print("\n\n-- Checking branches --\n\n")
 for branch in branches:
     # Check if branch is main or dev and skip
-    if branch.name == "main" or branch.name == "dev":
+    if branch.name == "main" or branch.name == "dev" or branch.name == "develop" or branch.name == "master":
         continue
 
     # Setup date variables and delta between now and last modified
-    date_now = datetime.datetime.utcnow()
-    date_last_modified = branch.commit.commit.last_modified
-    converted = datetime.datetime.strptime(date_last_modified, '%a, %d %b %Y %H:%M:%S GMT')
-    delta = date_now - converted
+    date_now = datetime.now(timezone.utc)
+    date_last_modified = datetime.strptime(branch.commit.commit.last_modified, '%a, %d %b %Y %H:%M:%S GMT').astimezone(timezone.utc)
+    delta = date_now - date_last_modified
 
-
-    # Check if branch author is not in users array
-    # if branch.commit.commit.author.email not in array_admins and branch.commit.commit.author.email not in array_developers:
-    #     dict_branches.append({ 'branch_name': branch.name,
-    #             'author_name': branch.commit.commit.author.name,
-    #             'author_email': branch.commit.commit.author.email,
-    #             'last_modified': delta.days,
-    #             'should_be_deleted': True })
-    # Check if branch author is older than 14 days
-    if delta.days >= 14:
-        dict_branches.append({ 'branch_name': branch.name,
+    # Check if branch was already merged
+    if branch.name in merged_branches:
+        print(" -", branch.name, "was already merged and is going to be marked as stale")
+        branches_dictionary.append({ 'branch_name': branch.name,
                 'author_name': branch.commit.commit.author.name,
                 'author_email': branch.commit.commit.author.email,
                 'last_modified': delta.days,
+                'reason': 'already merged',
                 'should_be_deleted': True })
-    else:
-        dict_branches.append({ 'branch_name': branch.name,
+        continue
+    # Check if branch last_modified is older than the defined days_to_stale input
+    elif delta.days >= days_to_stale:
+        print(" -", branch.name, "have not been modified in", delta.days, "days and is going to be marked as stale")
+        branches_dictionary.append({ 'branch_name': branch.name,
                 'author_name': branch.commit.commit.author.name,
                 'author_email': branch.commit.commit.author.email,
                 'last_modified': delta.days,
+                'reason': 'stale',
+                'should_be_deleted': True })
+        continue
+    else:
+        print(" -", branch.name, "is active")
+        branches_dictionary.append({ 'branch_name': branch.name,
+                'author_name': branch.commit.commit.author.name,
+                'author_email': branch.commit.commit.author.email,
+                'last_modified': delta.days,
+                'reason': '',
                 'should_be_deleted': False })
+        continue
 
-print()
-print(dict_branches)
-
-print()
-print()
-print('Branches to be deleted:')
-for d in dict_branches:
+print('\n\n-- Branches to be marked as stale --\n\n')
+for d in branches_dictionary:
     if d.get('should_be_deleted') == True:
-        print(d.get('branch_name'))
-        print(d.get('last_modified'))
-        print(d.get('should_be_deleted'))
+        print(" Branch name: ",  d.get('branch_name'))
+        print(" Owner:", d.get('author_name'))
+        print(" Last Modification: ", d.get('last_modified'), "days")
+        print(" Reason: ", d.get('reason'))
         print()

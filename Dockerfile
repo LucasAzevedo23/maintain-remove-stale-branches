@@ -9,4 +9,4 @@ RUN apt-get update -y &&\
     apt-get upgrade -y &&\
     pip install -r requirements.txt
 
-ENTRYPOINT [ "python3", "main.py" ]
+ENTRYPOINT [ "python3", "/usr/src/main.py" ]
