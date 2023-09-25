@@ -25,7 +25,6 @@ pull_requests = repo.get_pulls(state='closed')
 for pr in pull_requests:
     merged_branches.append(pr.head.ref)
 
-
 print("\n\n-- Checking branches --\n\n")
 for branch in branches:
     # Check if branch is main or dev and skip
@@ -74,4 +73,7 @@ for d in branches_dictionary:
         print(" Owner:", d.get('author_name'))
         print(" Last Modification: ", d.get('last_modified'), "days")
         print(" Reason: ", d.get('reason'))
+        print()
+        print(' -- renaming branch to stale/', d.get('branch_name'), '-- ')
+        repo.rename_branch(d.get('branch_name'), 'stale/'+d.get('branch_name'))
         print()
