@@ -3,10 +3,11 @@ from github import Github
 from github import Auth
 
 # Inputs
-token=""
+token="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"
 repo_slug="wexinc/ps-ds-peng-docs"
-admin_team_slug="platform-eng-admin"
-developer_team_slug="platform-eng"
+days_to_stale=21
+# admin_team_slug="platform-eng-admin"
+# developer_team_slug="platform-eng"
 
 # Structures to be used
 dict_branches = []
@@ -20,19 +21,15 @@ github_instance = Github(auth=auth)
 
 # Repo and Org retrieval
 repo = github_instance.get_repo(repo_slug)
-org = github_instance.get_organization("wexinc")
+#org = github_instance.get_organization("wexinc")
 
 # Branches, teams and closed pull requests retrieval
 branches = repo.get_branches()
 pull_requests = repo.get_pulls(state='closed')
-teams = org.get_teams()
+#teams = org.get_teams()
 
 for pr in pull_requests:
     array_merged_branches.append(pr.head.ref)
-
-print("-- Merged branches --")
-print(array_merged_branches)
-print()
 
 # for team in teams:
 #     # Append admin members to array_admins
@@ -56,7 +53,7 @@ print()
 
 for branch in branches:
     # Check if branch is main or dev and skip
-    if branch.name == "main" or branch.name == "dev":
+    if branch.name == "main" or branch.name == "dev" or branch.name == "develop" or branch.name == "master":
         continue
 
     # Setup date variables and delta between now and last modified
@@ -73,29 +70,37 @@ for branch in branches:
     #             'author_email': branch.commit.commit.author.email,
     #             'last_modified': delta.days,
     #             'should_be_deleted': True })
-    # Check if branch author is older than 14 days
-    if delta.days >= 14:
+    # Check if branch was already merged
+    if branch.name in array_merged_branches:
         dict_branches.append({ 'branch_name': branch.name,
                 'author_name': branch.commit.commit.author.name,
                 'author_email': branch.commit.commit.author.email,
                 'last_modified': delta.days,
+                'reason': 'already merged',
                 'should_be_deleted': True })
+        continue
+    # Check if branch author is older than 14 days
+    elif delta.days >= days_to_stale:
+        dict_branches.append({ 'branch_name': branch.name,
+                'author_name': branch.commit.commit.author.name,
+                'author_email': branch.commit.commit.author.email,
+                'last_modified': delta.days,
+                'reason': 'stale',
+                'should_be_deleted': True })
+        continue
     else:
         dict_branches.append({ 'branch_name': branch.name,
                 'author_name': branch.commit.commit.author.name,
                 'author_email': branch.commit.commit.author.email,
                 'last_modified': delta.days,
+                'reason': '',
                 'should_be_deleted': False })
+        continue
 
-print()
-print(dict_branches)
-
-print()
-print()
-print('Branches to be deleted:')
+print('Branches to be deleted:\n')
 for d in dict_branches:
     if d.get('should_be_deleted') == True:
-        print(d.get('branch_name'))
-        print(d.get('last_modified'))
-        print(d.get('should_be_deleted'))
+        print("Branch name: ",  d.get('branch_name'))
+        print("Last Modification: ", d.get('last_modified'), "days")
+        print("Reason: ", d.get('reason'))
         print()

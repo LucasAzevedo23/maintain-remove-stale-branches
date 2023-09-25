@@ -11,5 +11,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
-          developer_team_slug: platform-eng
-          admin_team_slug: platform-eng-admin
+          days_to_stale: 3
