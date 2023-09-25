@@ -1,7 +1,7 @@
 name: Maintain Stale branches
 description: This action serves to maintain stale branches
 
-input:
+inputs:
   token:
     description: 'GitHub token used to create an authenticated client'
     required: true
