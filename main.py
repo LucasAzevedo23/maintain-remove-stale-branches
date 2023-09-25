@@ -73,11 +73,10 @@ for d in branches_dictionary:
         print(" Owner:", d.get('author_name'))
         print(" Last Modification: ", d.get('last_modified'), "days")
         print(" Reason: ", d.get('reason'))
-        print()
         if 'stale/' in d.get('branch_name'):
-            print(' -- branch already marked as stale -- ')
+            print(' - branch', d.get('branch_name'), ' already marked as stale - ')
             print()
         else:
-            print(' -- renaming branch to', 'stale/'+d.get('branch_name'), '-- ')
+            print(' - renaming branch', d.get('branch_name'), 'to', 'stale/'+d.get('branch_name'), '- ')
             repo.rename_branch(d.get('branch_name'), 'stale/'+d.get('branch_name'))
             print()
