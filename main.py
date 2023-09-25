@@ -76,7 +76,8 @@ for d in branches_dictionary:
         print()
         if 'stale/' in d.get('branch_name'):
             print(' -- branch already marked as stale -- ')
+            print()
         else:
-            print(' -- renaming branch to stale/', d.get('branch_name'), '-- ')
+            print(' -- renaming branch to', 'stale/'+d.get('branch_name'), '-- ')
             repo.rename_branch(d.get('branch_name'), 'stale/'+d.get('branch_name'))
             print()
