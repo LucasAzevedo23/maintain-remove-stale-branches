@@ -73,6 +73,7 @@ print('\n\n-- Branches to be marked as stale --\n\n')
 for d in branches_dictionary:
     if d.get('should_be_deleted') == True:
         print(" Branch name: ",  d.get('branch_name'))
+        print(" Owner:", d.get('author_name'))
         print(" Last Modification: ", d.get('last_modified'), "days")
         print(" Reason: ", d.get('reason'))
         print()
