@@ -12,3 +12,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
           days_to_stale: 3
+      - name: Delete marked branches
+        uses: noh4nsen/delete-stale-branches@8f00fd37ed20ecb72a86a76c11fba385887b6f57
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
