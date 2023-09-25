@@ -57,7 +57,7 @@ for branch in branches:
                 'should_be_deleted': True })
         continue
     else:
-        print(" -", branch.name, "is active")
+        print("     -", branch.name, "is active")
         branches_dictionary.append({ 'branch_name': branch.name,
                 'author_name': branch.commit.commit.author.name,
                 'author_email': branch.commit.commit.author.email,
