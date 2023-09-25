@@ -7,7 +7,7 @@ input:
     default: ${{ github.token }}
     required: false
   repo:
-    description: 'owner/repo'
+    description: 'LucasAzevedo23/maintain-remove-stale-branches'
     required: true
   developer_team_slug:
     description: 'developer team slug'
