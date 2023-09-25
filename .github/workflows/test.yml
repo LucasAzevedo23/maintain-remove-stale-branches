@@ -1,10 +1,6 @@
 name: Test 
 
-on: 
-  workflow_dispatch:
-    inputs:
-      days_to_stale:
-        description: 'Quantity of days since last modification to branch be considered stale'
+on: [workflow_dispatch]
 
 jobs:
   test:
@@ -15,4 +11,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
-          days_to_stale: ${{ github.event.inputs.days_to_stale }}
+          days_to_stale: 2
