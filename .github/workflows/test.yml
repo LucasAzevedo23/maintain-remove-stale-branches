@@ -3,22 +3,22 @@ name: Test
 on: 
   workflow_dispatch:
   schedule:
-    - cron: '*/30 * * * *'
-    - cron: '*/45 * * * *'
+    - cron: '0 13 15,30 * *'
+    - cron: '0 13 14,29 * *'
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Test maintain-remove-stale-branches
-        if: github.event.schedule == '*/45 * * * *'
+        if: github.event.schedule == '0 13 14,29 * *'
         uses: LucasAzevedo23/maintain-remove-stale-branches@0.2.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
           days_to_stale: 3
       - name: Delete marked branches
-        if: github.event.schedule == '*/30 * * * *'
+        if: github.event.schedule == '0 13 15,30 * *'
         uses: noh4nsen/delete-stale-branches@8f00fd37ed20ecb72a86a76c11fba385887b6f57
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
