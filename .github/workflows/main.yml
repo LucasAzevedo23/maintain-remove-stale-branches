@@ -1,25 +1,15 @@
-name: Release Action
+name: Test 
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - release/**
+on: [workflow_dispatch]
 
 jobs:
-  release:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Config git
-        run: |
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          git fetch
-          git pull
-      - name: Git tag
-        run: |
-          export version=$(git branch --show-current | sed 's:.*/::')
-          git tag -a $version -m $version
-          git push origin --tags
+      - name: Test maintain-remove-stale-branches
+        uses: LucasAzevedo23/maintain-remove-stale-branches@7f814752ed73064608e2a41329f30eb9bf0a5f8d
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          developer_team_slug: platform-eng
+          admin_team_slug: platform-eng-admin
