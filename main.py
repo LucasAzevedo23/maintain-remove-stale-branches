@@ -74,6 +74,9 @@ for d in branches_dictionary:
         print(" Last Modification: ", d.get('last_modified'), "days")
         print(" Reason: ", d.get('reason'))
         print()
-        print(' -- renaming branch to stale/', d.get('branch_name'), '-- ')
-        repo.rename_branch(d.get('branch_name'), 'stale/'+d.get('branch_name'))
-        print()
+        if 'stale/' in d.get('branch_name'):
+            print(' -- branch already marked as stale -- ')
+        else:
+            print(' -- renaming branch to stale/', d.get('branch_name'), '-- ')
+            repo.rename_branch(d.get('branch_name'), 'stale/'+d.get('branch_name'))
+            print()
