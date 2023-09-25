@@ -6,7 +6,7 @@ from github import Auth
 # Retrieving input variables from environment variables
 github_token = os.environ['INPUT_TOKEN']
 repo = os.environ['INPUT_REPOSITORY']
-days_to_stale = os.environ['INPUT_DAYS_TO_STALE']
+days_to_stale = int(os.environ['INPUT_DAYS_TO_STALE'])
 
 # Structures to be used
 branches_dictionary = []
