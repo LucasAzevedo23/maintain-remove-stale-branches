@@ -33,7 +33,7 @@ for branch in branches:
         continue
 
     # Setup date variables and delta between now and last modified
-    date_now = datetime.datetime.now(datetime.UTC)
+    date_now = datetime.now(datetime.UTC)
     date_last_modified = branch.commit.commit.last_modified
     converted = datetime.datetime.strptime(date_last_modified, '%a, %d %b %Y %H:%M:%S GMT')
     delta = date_now - converted
