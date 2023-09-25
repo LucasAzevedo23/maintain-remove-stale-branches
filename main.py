@@ -3,10 +3,9 @@ from github import Github
 from github import Auth
 
 # Inputs
-token=""
-repo_slug="wexinc/ps-ds-peng-docs"
-admin_team_slug="platform-eng-admin"
-developer_team_slug="platform-eng"
+token="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"
+repo_slug="LucasAzevedo23/maintain-remove-stale-branches"
+
 
 # Structures to be used
 dict_branches = []
