@@ -16,10 +16,8 @@ merged_branches = []
 auth = Auth.Token(github_token)
 github_instance = Github(auth=auth)
 
-# Get the repository
+# Repo, Branches, and closed pull requests retrieval
 repo = github_instance.get_repo(repo)
-
-# Branches, teams and closed pull requests retrieval
 branches = repo.get_branches()
 pull_requests = repo.get_pulls(state='closed')
 
