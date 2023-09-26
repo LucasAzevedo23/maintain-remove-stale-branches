@@ -11,6 +11,7 @@ days_to_stale = int(os.environ['INPUT_DAYS_TO_STALE'])
 # Structures to be used
 branches_dictionary = []
 merged_branches = []
+open_pr_branches = []
 
 # Github Library initial configuration
 auth = Auth.Token(github_token)
@@ -20,15 +21,19 @@ github_instance = Github(auth=auth)
 repo = github_instance.get_repo(repo)
 branches = repo.get_branches()
 pull_requests = repo.get_pulls(state='closed')
+open_pull_requests = repo.get_pulls(state='open')
 
 # Retrieve branch name from closed pull requests
 for pr in pull_requests:
     merged_branches.append(pr.head.ref)
 
+for pr in open_pull_requests:
+    open_pr_branches.append(pr.head.ref)
+
 print("\n\n-- Checking branches --\n")
 for branch in branches:
     # Check if branch is main or dev and skip
-    if branch.name == "main" or branch.name == "dev" or branch.name == "develop" or branch.name == "master":
+    if branch.name == "main" or branch.name == "dev" or branch.name == "develop" or branch.name == "master" or branch.name == "dev-eu-central-1":
         continue
 
     # Setup date variables and delta between now and last modified
@@ -36,8 +41,18 @@ for branch in branches:
     date_last_modified = datetime.strptime(branch.commit.commit.last_modified, '%a, %d %b %Y %H:%M:%S GMT').astimezone(timezone.utc)
     delta = date_now - date_last_modified
 
+    # Check if branch was an open pull request
+    if branch.name in open_pr_branches:
+        print("     -", branch.name, "has a pull request open")
+        branches_dictionary.append({ 'branch_name': branch.name,
+                'author_name': branch.commit.commit.author.name,
+                'author_email': branch.commit.commit.author.email,
+                'last_modified': delta.days,
+                'reason': 'has a pull request open',
+                'should_be_deleted': False })
+        continue        
     # Check if branch was already merged
-    if branch.name in merged_branches:
+    elif branch.name in merged_branches:
         print("     -", branch.name, "was already merged and is going to be marked as stale")
         branches_dictionary.append({ 'branch_name': branch.name,
                 'author_name': branch.commit.commit.author.name,
@@ -62,7 +77,7 @@ for branch in branches:
                 'author_name': branch.commit.commit.author.name,
                 'author_email': branch.commit.commit.author.email,
                 'last_modified': delta.days,
-                'reason': '',
+                'reason': 'is active',
                 'should_be_deleted': False })
         continue
 
